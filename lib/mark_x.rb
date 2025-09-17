@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-require "dotenv/load" rescue nil
+begin
+  require "dotenv/load"
+rescue LoadError
+  # dotenv is optional; skip if not available
+end
 
 module MarkX
 end

@@ -129,6 +129,12 @@ module MarkX
                else
                  File.read(path)
                end
+        # If headers explicitly false, return array rows without header list
+        if headers == false || (headers.is_a?(String) && headers.downcase == "false")
+          arr = CSV.parse(data, headers: false, col_sep: col_sep)
+          return nil, arr
+        end
+
         headers_opt = case headers
                       when :auto then true
                       when true, false then headers
@@ -137,7 +143,7 @@ module MarkX
                       end
         csv = CSV.new(data, headers: headers_opt, col_sep: col_sep)
         rows = csv.read
-        if rows.headers&.any?
+        if rows.respond_to?(:headers) && rows.headers&.any?
           header_list = rows.headers
           arr = rows.map { |r| r.to_h }
           return header_list, arr

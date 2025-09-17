@@ -284,8 +284,6 @@ module MarkX
         sleep options[:interval]
       end
     end
-  end
-end
     no_commands do
       def ingest_folder(db, embedder, chunker, folder, opts = nil)
         folder = File.expand_path(folder)
@@ -567,7 +565,7 @@ end
             end
           end
         end
-        return { mode: "sources", sources: data } if as == :json
+        { mode: "sources", sources: data }
       end
 
       def parse_source_names(value)
@@ -599,45 +597,52 @@ end
 
       def emit_preview(payload, json:, out: nil)
         if json
-          text = JSON.pretty_generate(payload)
+          text = JSON.pretty_generate(payload || {})
         else
-          text = case payload[:mode] || payload["mode"]
-                 when "folder"
-                   p = payload[:folder] || payload["folder"]
-                   c = payload[:files] || payload["files"]
-                   "Would ingest #{c} files from folder: #{p}"
-                 when "db"
-                   u = payload[:db_url] || payload["db_url"]
-                   r = payload[:rows] || payload["rows"]
-                   "Would ingest approximately #{r} rows from DB: #{u}"
-                 when "sources"
-                   lines = payload[:sources].map do |s|
-                     if s[:type] == 'folder' || s['type'] == 'folder'
-                       name = s[:name] || s['name'] || '(folder)'
-                       path = s[:folder] || s['folder']
-                       files = s[:files] || s['files']
-                       "Source #{name}: folder #{path} — files: #{files}"
-                     elsif s[:type] == 'db' || s['type'] == 'db'
-                       name = s[:name] || s['name'] || '(db)'
-                       url = s[:db_url] || s['db_url']
-                       rows = s[:rows] || s['rows']
-                       "Source #{name}: db #{url} — rows: #{rows}"
-                     else
-                       name = s[:name] || s['name'] || '(unknown)'
-                       type = s[:type] || s['type']
-                       "Source #{name}: type=#{type}"
+          if payload.nil?
+            text = nil # preview_from_config_sources already printed lines
+          else
+            text = case payload[:mode] || payload["mode"]
+                   when "folder"
+                     p = payload[:folder] || payload["folder"]
+                     c = payload[:files] || payload["files"]
+                     "Would ingest #{c} files from folder: #{p}"
+                   when "db"
+                     u = payload[:db_url] || payload["db_url"]
+                     r = payload[:rows] || payload["rows"]
+                     "Would ingest approximately #{r} rows from DB: #{u}"
+                   when "sources"
+                     list = Array(payload[:sources])
+                     lines = list.compact.map do |s|
+                       if s[:type] == 'folder' || s['type'] == 'folder'
+                         name = s[:name] || s['name'] || '(folder)'
+                         path = s[:folder] || s['folder']
+                         files = s[:files] || s['files']
+                         "Source #{name}: folder #{path} — files: #{files}"
+                       elsif s[:type] == 'db' || s['type'] == 'db'
+                         name = s[:name] || s['name'] || '(db)'
+                         url = s[:db_url] || s['db_url']
+                         rows = s[:rows] || s['rows']
+                         "Source #{name}: db #{url} — rows: #{rows}"
+                       else
+                         name = s[:name] || s['name'] || '(unknown)'
+                         type = s[:type] || s['type']
+                         "Source #{name}: type=#{type}"
+                       end
                      end
+                     lines.join("\n")
+                   else
+                     JSON.pretty_generate(payload)
                    end
-                   lines.join("\n")
-                 else
-                   JSON.pretty_generate(payload)
-                 end
+          end
         end
         if out
-          File.write(out, text)
+          File.write(out, text || "")
           Log.info "Preview saved to #{out}"
         else
-          puts text
+          puts text if text
         end
       end
     end
+  end
+end

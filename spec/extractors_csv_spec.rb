@@ -1,4 +1,5 @@
 require "spec_helper"
+require "tmpdir"
 
 RSpec.describe MarkX::Extractors::CSVFile do
   it "parses a simple CSV file to text" do
@@ -21,4 +22,3 @@ RSpec.describe MarkX::Extractors::CSVFile do
     end
   end
 end
-

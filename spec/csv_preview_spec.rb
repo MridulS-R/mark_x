@@ -1,4 +1,5 @@
 require "spec_helper"
+require "tmpdir"
 require "stringio"
 
 RSpec.describe "CSV preview" do
