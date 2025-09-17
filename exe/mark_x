@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup" rescue nil
+require "mark_x"
+
+MarkX::CLI.start(ARGV)
+

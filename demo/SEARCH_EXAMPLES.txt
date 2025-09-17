@@ -1,0 +1,8 @@
+Queries to try
+
+- what is markx?
+- how does hybrid search work?
+- list the main features
+- how to run the demo
+- what is the roadmap
+- how to use the cli

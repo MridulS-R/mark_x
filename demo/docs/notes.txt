@@ -1,0 +1,3 @@
+These are general notes for the MarkX demo.
+They include references to ingest, search, and chat.
+Try searching for 'main features' or 'hybrid search'.

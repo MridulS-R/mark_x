@@ -1,0 +1,36 @@
+database_url: postgres://localhost/markx
+project: my_project
+embed_provider: openai
+embed_model: text-embedding-3-large
+embed_dim: 3072
+chunk_size: 1000
+chunk_overlap: 150
+top_k: 8
+index_method: ivfflat
+re_rank: false
+llm_provider: openai
+llm_model: gpt-4o-mini
+search_mode: vector
+rank: rank
+
+# Optional sources configuration for `mark_x ingest` without flags
+# sources:
+#   - name: docs
+#     type: folder
+#     path: ./docs
+#     csv_row_mode: true
+#     csv_delimiter: ","
+#     csv_headers: auto # or true/false
+#     csv_where:
+#       team: Search
+#       location: NYC
+#     csv_limit: 100
+#   - name: notes
+#     type: db
+#     url: postgres://readonly:password@localhost:5432/source_db
+#     table: notes
+#     id_column: id
+#     text_column: body
+#     where: published = true
+#     alias: notes_src
+#     format: markdown
